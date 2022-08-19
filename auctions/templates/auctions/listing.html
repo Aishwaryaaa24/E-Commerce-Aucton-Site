@@ -1,0 +1,125 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+{% if curr_user.id == None %}
+    <div class="alert alert-danger" role="alert">
+        <strong>Please <a href="{% url 'login' %}" class="alert-link">Log in</a> to continue!</strong>
+    </div>
+{% endif %}   
+{% if lower_bid == 1 %}
+    <form action="{% url 'listing' listingdeets.id %}">
+        <div class="alert alert-danger" role="alert">
+            <strong>Place a bid of value higher than existing bid!</strong>
+            <button type="submit" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </form>
+{% endif %}
+{% if listingdeets.is_active == False %}
+    {% if curr_user == listingdeets.won_by %}
+        <form action="{% url 'listing' listingdeets.id %}">
+            <div class="alert alert-success" role="alert">
+                <strong>You have won this Auction!</strong>
+                <button type="submit" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </form>  
+    {% else %}
+        <form action="{% url 'listing' listingdeets.id %}">
+            <div class="alert alert-dark" role="alert">
+                <strong>This listing has been closed!</strong>
+                <button type="submit" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </form>  
+    {% endif %}
+{% endif %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xl-3 col-lg-6 col-md-6" style="border:1px solid #ddd">
+            <img src="{{listingdeets.img.url}}" alt="" class="img-fluid">
+        </div>
+        <div class="col-xl-9 col-lg-6 col-md-6" style="border:1px solid #ddd">
+            
+            {% if listingdeets.is_active == False %}
+                <h3 style="color:rgb(107, 130, 133);">{{listingdeets.item_name}}</h3>
+                <h6 style="color:rgb(107, 130, 133);">Category: {{cat.cat_name}}</h6>
+                <h6 style="color:rgb(107, 130, 133);">Listed by: {{listingdeets.listed_by}}</h6>
+                <h6 style="color:rgb(107, 130, 133);">Won by: {{listingdeets.won_by}}</h6>
+                <h1 style="color:rgb(107, 130, 133);">CLOSED</h1>
+            {% else %}
+                <h3>{{listingdeets.item_name}}</h3>
+                <h6>Category: {{cat.cat_name}}</h6>
+                <p>{{listingdeets.content}}</p>
+                <h5>Price: $ {{curr_bid}}</h5>
+                <h6 >Listed by: {{listingdeets.listed_by}}</h6>
+                <form action="{% url 'listing' listingdeets.id %}" , method="POST", name="watchlistForm">
+                    {% csrf_token %}
+                    {% if curr_user.id != None %}
+                        {% if is_in_watchlist == 1 %}
+                            <input type="submit" name="checkbox" value="Remove">
+                        {% elif is_in_watchlist == 0 %}
+                            <input type="submit" name="checkbox" value="Add">
+                        {% endif %}
+                        <br><br>
+                        <input type="number" name="mybid" step="0.01">
+                        <input type="submit" name="checkbox" value="Place Bid">
+                        {% if can_close == True %}
+                        <br><br>
+                            <input type="submit" name = "close" value="Close Auction">
+                        {% endif %}
+                        <form action="{% url 'listing' listingdeets.id %}">
+                            <div class="container mt-5">
+                                <div class="d-flex justify-content-center row">
+                                    <div class="col-md-8">
+                                        <div class="d-flex flex-column comment-section">
+                                            {% for c in commentsForListing %}
+                                                <div class="bg-light p-2">
+                                                    <div class="card mb-3">
+                                                        <div class="card-body">
+                                                            <div class="d-flex flex-start">
+                                                                <div class="w-100">
+                                                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                                                        <h6 class="text-primary fw-bold mb-0">
+                                                                            {{c.name}} : 
+                                                                        <span class="text-dark ms-2">{{c.content}}</span>
+                                                                        </h6>
+                                                                    </div>
+                                                                    <div class="d-flex justify-content-between align-items-center">
+                                                                            <p class="small mb-0" style="color: #aaa;"></p>
+                                                                            <div class="d-flex flex-row">
+                                                                                <i class="fas fa-star text-warning me-2"></i>
+                                                                                <i class="far fa-check-circle" style="color: #aaa;"></i>
+                                                                            </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                            <div class="bg-light p-2">
+                                                <div class="d-flex flex-row fs-12">
+                                                    <div class="like p-2 cursor"><i class="fa fa-commenting-o"></i><span class="ml-1">Comment</span></div>
+                                                </div>
+                                            </div>
+                                            <div class="bg-light p-2">
+                                                <textarea class="form-control ml-1 shadow-none textarea" name = 'comment_content'></textarea>
+                                            </div>
+                                            <div class="mt-2 text-right"><input type="submit" name="comment" value="Place Comment">&nbsp;&nbsp;<input type="submit" name="comment" value="Cancel"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <br><br>
+                    {% endif %}
+                </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

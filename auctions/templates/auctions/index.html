@@ -1,0 +1,25 @@
+{% extends "auctions/layout.html" %}
+
+<!-- Active Listings -->
+
+{% block body %}
+    <h2>Active Listings</h2>
+    <br>
+    {% for a in listings %}
+        <div class="container-fluid">
+            <div class="row">
+            <div class="col-xl-3 col-lg-6 col-md-6" style="border:1px solid #ddd">
+                <img src="{{a.img.url}}" alt="" class="img-fluid">
+            </div>
+            <div class="col-xl-9 col-lg-6 col-md-6" style="border:1px solid #ddd">
+                <h3><a href="{% url 'listing' a.id %}">{{a.item_name}}</a></h3>
+                <h6>Category: {{a.category}}</h6>
+                <p>{{a.content}}</p>
+                <h5>Price: $ {{a.start_bid}}</h5>
+                <h6 >Listed by: {{a.listed_by}}</h6>
+            </div>
+            </div>
+        </div>
+
+    {% endfor %}
+{% endblock %}

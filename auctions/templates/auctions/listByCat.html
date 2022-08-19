@@ -1,0 +1,20 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    {% for l in item_list %}
+        <div class="container-fluid">
+            <div class="row">
+            <div class="col-xl-3 col-lg-6 col-md-6" style="border:1px solid #ddd">
+                <img src="{{l.img.url}}" alt="" class="img-fluid">
+            </div>
+            <div class="col-xl-9 col-lg-6 col-md-6" style="border:1px solid #ddd">
+                <h3><a href="{% url 'listing' l.id %}">{{a.item_name}}</a></h3>
+                <h6>Category: {{l.category}}</h6>
+                <p>{{l.content}}</p>
+                <h5>Price: $ {{l.start_bid}}</h5>
+                <h6 >Listed by: {{l.listed_by}}</h6>
+            </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

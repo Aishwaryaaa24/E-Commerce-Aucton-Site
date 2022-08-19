@@ -1,0 +1,60 @@
+{% extends "auctions/layout.html" %}
+
+<!-- Create Listing -->
+
+{% block body %}    
+    {% if alert == 1 %}
+        <form action="{% url 'create' %}">
+            {% csrf_token %}
+            <div class="alert alert-success" role="alert">
+                <strong>Created Listing Successfully!</strong>
+                <button type="submit" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </form>
+    {% endif %}
+    {% if alert == 2 %}
+        <form action="{% url 'create' %}">
+            {% csrf_token %}
+            <div class="alert alert-danger" role="alert">
+                <strong>Please enter valid Details</strong>
+                <button type="submit" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </form>
+    {% endif %}
+    <h1>Create A New Listing</h1>
+    <br>
+    <form action="{% url 'create' %}", method = "POST" enctype="multipart/form-data">
+        
+        {% csrf_token %}
+        <table style="padding: 50px;font-weight: 100;font-family: Arial;">
+            <tbody>
+                <tr>
+                    <td>Title: </td>
+                    <td><input required type="text" id="tle" name = "title" placeholder="Title" size="85px" text-size="200px"></td>
+                </tr>
+                <tr>
+                    <td>Description: </td>
+                    <td><textarea required name="content" id="desc" cols="87" rows="10" placeholder="Description" size="85px" text-size="200px"></textarea></td>
+                </tr>
+                <tr>
+                    <td>Starting Bid: </td>
+                    <td><input required type="number" id="sb" name = "startbid" placeholder="Starting Bid" step=".01" size="85px" text-size="200px"></td>
+                </tr>
+                <tr>
+                    <td>Image URL: </td>
+                    <!-- <td><input type="file" id = "img_file" name="img_file" ></td> -->
+                    <td><input name="image" type="file" accept="image/*"></td>
+                </tr>
+                <tr>
+                    <td>Category: </td>
+                    <td><input type="text" id="cat" name="category" placeholder="Category" size="85px" text-size="200px"></td>
+                </tr>
+            </tbody>
+        </table>
+        <input type="submit" name="Save Listing" id="">
+    </form>
+{% endblock %}
